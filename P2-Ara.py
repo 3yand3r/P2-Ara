@@ -34,6 +34,7 @@ import re
 import secrets
 from pytubefix import YouTube
 import zipfile
+import datetime
 #
 
 colorama.init(autoreset=True)
@@ -517,7 +518,8 @@ def info():
     print ( f" {Back.MAGENTA}[+] Codded By:@\u00A3yand3r {Style.RESET_ALL}{Back.GREEN} {W}### {Style.RESET_ALL} {G}PC Name:{Y} {hostname}")
     print ( f" {Back.CYAN}{M}[+] Version.1.0 {Back.WHITE} {Y}Lagos {Back.WHITE}{G}Nigeria {Style.RESET_ALL} {G}IP Address:{Y} {ip}")
     print (f"{W}>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>{Style.RESET_ALL}") 
-    print (time.strftime(f"{W}{italic}%I:%M%p on %A, %B %e, %Y{italic2}"))
+    current_time = datetime.datetime.now().strftime("%H:%M:%S")   
+    print (f"{W}{italic}Current Time:{italic2}", f"{Y}{current_time}")
     print (f"{G}[{Y}!{G}] {C}P{Y}2{M}-{R}A{B}r{W}a {B}Wide Range All In One Tools.\n{G}[{Y}!{G}]{C} Get IP Address Info / Domain Info And Many More.{Style.RESET_ALL}")
     
 
