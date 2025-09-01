@@ -1,0 +1,29 @@
+from subprocess import call, sys
+import socket
+import colorama
+from colorama import Fore, Back, Style, init
+from rich.progress import Progress
+from rich.progress import Progress
+from rich.table import Table
+from rich.console import Console
+import os
+import requests
+from bs4 import BeautifulSoup
+import random
+import sys
+import time
+import pyshorteners
+import qrcode
+from PIL import Image
+import whois 
+import string
+import random
+#import PyPDF2, pyttsx3
+import urllib.request as urllib2
+import json
+#from rembg import remove
+from PIL import Image
+import subprocess
+import re
+import secrets
+from pytubefix import YouTube
