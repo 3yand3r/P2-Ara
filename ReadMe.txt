@@ -28,8 +28,8 @@ by getting domain info you can understand what and were a website belong to.
 
 
 
-![Menu 1](19.png)
-![Menu 2](2.png)
+![Menu 1](https://github.com/3yand3r/P2-Ara/master/19.png)
+![Menu 2](https://github.com/3yand3r/P2-Ara/blob/master/2.png)
 
 
 
