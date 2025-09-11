@@ -25,3 +25,11 @@ by getting domain info you can understand what and were a website belong to.
 - incase you found an Error/Bug kindly Hit me up on telegram.
 - a lot of tools are avalaible
 - coming soon....
+
+
+
+![Menu 1](19.png)
+![Menu 2](2.png)
+
+
+
