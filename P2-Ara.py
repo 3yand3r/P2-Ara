@@ -1,11 +1,10 @@
 # HELLO WORLD !!! Good day folks , i am [ 3yand3r ] this tools was created  for Recon..100% Python 
-# NIGERIA NO1 CYBER SEC [ 3yand3r ]
+# NIGERIA NO1 CYBER SEC [ 3yand3r ] (9ja No Dey Carry Last!!!)
 # this tools was created 4 Nigeria SYS ADMIN and CyberSec Expert.
  
 #!/usr/bin/env python
 from subprocess import call, sys
 import socket
-#!/usr/bin/env python
 import colorama
 from colorama import Fore, Back, Style, init
 from rich.progress import Progress
@@ -24,10 +23,8 @@ from PIL import Image
 import whois
 import string
 import random
-#import PyPDF2, pyttsx3
 import urllib.request as urllib2
 import json
-#from rembg import remove
 from PIL import Image
 import subprocess
 import re
@@ -36,7 +33,97 @@ from pytubefix import YouTube
 import zipfile
 import datetime
 #
+from PIL import Image
+from PIL.ExifTags import TAGS
+import sys
+import argparse
+#
+import pikepdf
+import datetime
+import re
+from dateutil.tz import tzutc, tzoffset
+import sys
+#
+import PyPDF2
+from geopy.geocoders import Nominatim
+import time
+from pprint import pprint
 
+# instantiate a new Nominatim client
+#app = Nominatim(user_agent="tutorial")
+# get location raw data
+#location = app.geocode("Nairobi, Kenya").raw
+# print raw data
+#pprint(location)
+
+def GetLocation_By_add_Lat_lon():
+    Display_banners()
+    print (f" ")
+    print (f"{Y}++++++++{R}++++++++++{G}++++++++++++")
+    print (f"{Y}1. Get Location By Address.")
+    print (f"{G}2. Get Location By Lat / Longitude.")
+    print (f"{Y}++++++++{R}++++++++++{G}+++++++++=++")
+    user_choice = input(f"{C}Enter Choice:")
+    if user_choice == "1":
+       address()
+
+    elif user_choice == "2":
+         Latitude()
+    else:
+        print (f"{R}[-]Invalid choice please try again")
+
+def get_location_by_address(address):
+    """This function returns a location as raw from an address
+    will repeat until success"""
+    app = Nominatim(user_agent="tutorial")
+    time.sleep(1)
+    try: 
+        return app.geocode(address).raw
+    except:
+        return get_location_by_address(address)
+
+def address():
+    address = input(f"{M}Enter Country /City or State Address:")
+    location = get_location_by_address(address)
+    latitude = location["lat"]
+    longitude = location["lon"]
+    print(f"{Y}[{R}+{Y}]{W}{G}{latitude}, {longitude}{Y}[{R}+{Y}]{Style.RESET_ALL}")
+# print all returned data
+    pprint(location)
+
+from geopy.geocoders import Nominatim
+from pprint import pprint
+import time
+
+app = Nominatim(user_agent="tutorial")
+
+def get_address_by_location(latitude, longitude, language="en"):
+    """This function returns an address as raw from a location
+    will repeat until success"""
+    # build coordinates string to pass to reverse() function
+    coordinates = f"{latitude}, {longitude}"
+    # sleep for a second to respect Usage Policy
+    time.sleep(1)
+    try:
+        return app.reverse(coordinates, language=language).raw
+    except:
+        return get_address_by_location(latitude, longitude)
+
+# define your coordinates
+
+def Latitude():
+    # define your coordinates
+    latitude = input(f"{G}Enter Latitude:") 
+#36.723
+    longitude = input(f"{G}Enter Longitude:")
+#3.188
+ #   get the address info
+    address = get_address_by_location(latitude, longitude)
+   # print all returned data
+    pprint(address)    # define your coordinates
+    #Latitude()
+
+#
 colorama.init(autoreset=True)
 
 init(autoreset=False)
@@ -55,6 +142,173 @@ tick = "\u2714"
 cross = "\u274C"
 italic = "\033[3m"
 italic2 = "\033[0m"
+#
+
+def transform_date(date_str):
+    pdf_date_pattern = re.compile(''.join([
+        r"(D:)?",
+        r"(?P<year>\d\d\d\d)",
+        r"(?P<month>\d\d)",
+        r"(?P<day>\d\d)",
+        r"(?P<hour>\d\d)",
+        r"(?P<minute>\d\d)",
+        r"(?P<second>\d\d)",
+        r"(?P<tz_offset>[+-zZ])?",
+        r"(?P<tz_hour>\d\d)?",
+        r"'?(?P<tz_minute>\d\d)?'?"]))      
+    #g
+    pdf_date_pattern
+    match = re.match(pdf_date_pattern, date_str)
+    if match:
+       date_info = match.groupdict()
+       for k, v in date_info.items():  # transform values
+            if v is None:
+                pass
+            elif k == 'tz_offset':
+                date_info[k] = v.lower()  # so we can treat Z as z
+            else:
+                date_info[k] = int(v)
+
+       if date_info['tz_offset'] in ('z', None):  # UTC
+           date_info['tzinfo'] = tzutc()
+       else:
+            multiplier = 1 if date_info['tz_offset'] == '+' else -1
+            date_info['tzinfo'] = tzoffset(None, multiplier*(3600 * date_info['tz_hour'] + 60 * date_info['tz_minute']))
+
+       for k in ('tz_offset', 'tz_hour', 'tz_minute'):  # no longer needed
+           del date_info[k]
+
+       return datetime.datetime(**date_info)
+
+
+def ExtractPdF_Mdata():
+    Display_banners()
+    print (f"{R}~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+    print (f"{G}[Info]:{Y} Kindly Enter the PDF file name to Extract the MetaData.{Style.RESET_ALL}")
+    print (f"{R}~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+    pdf_filename = input (f"{M}Enter file name:")
+    pdf = pikepdf.Pdf.open(pdf_filename)
+    docinfo = pdf.docinfo
+    for key, value in docinfo.items():
+        if str(value).startswith("D:"):
+        # pdf datetime format, convert to python datetime
+           value = transform_date(str(pdf.docinfo["/CreationDate"]))
+        print(key, ":", value)
+        print (" ")
+        print (f"{G}{pdf_filename} MetaData Extract to ExtractPdf_MD.txt Successefully.")
+#
+def Clear_allpdf_metadata(): 
+    Display_banners()
+    print (" ")
+    print (f"{Y}>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>{Style.RESET_ALL}")
+    pdf_file_path = input(f"{B}Enter PDF file name/path to Clear Meta DATA:")
+    print (f"{Y}>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>{Style.RESET_ALL}")
+    pdf_file = pdf_file_path
+    # Open the PDF file.
+    with open(pdf_file, 'rb') as file:
+        reader = PyPDF2.PdfReader(file)
+        # Check if metadata exists.
+        if reader.metadata is not None:
+            print(f"{Y}Metadata found in the PDF file.")
+            # Create a new PDF file without metadata.
+            writer = PyPDF2.PdfWriter()
+            # Copy pages from the original PDF to the new PDF.
+            for page_num in range(len(reader.pages)):
+                page = reader.pages[page_num]
+                writer.add_page(page)
+            # Open a new file to write the PDF without metadata.
+            new_pdf_file = f"{pdf_file.split('.')[0]}_no_metadata.pdf"
+            with open(new_pdf_file, 'wb') as output_file:
+                writer.write(output_file)
+            print(f"{G}PDF file without [ metadata ] saved as '{new_pdf_file}'.")
+            print (f"{M}Press Enter to continue ...")
+        else:
+            print(f"{R}[!]No metadata found in the PDF file.")
+
+#
+def Extract_Clear_Pdf_MetaData():
+    Display_banners()
+    print (" ")
+    print (f"{R}1. Extract PDF MetaData. {Style.RESET_ALL}")
+    print (f"{Y}2. Clear PDF MetaData.{Style.RESET_ALL}")
+    user_choice = input(f"{G}Choose an Option:>> {Style.RESET_ALL}")
+    if user_choice == "1":
+       ExtractPdF_Mdata()
+   
+    elif user_choice == "2":
+         Clear_allpdf_metadata()
+
+    else:
+        print (f"{R}[-]Invalid option Please try again. {Style.RESET_ALL}")
+#
+
+
+#
+def Extract_Clear_Image_MetaData():
+    Display_banners()
+    print (" ")
+    print (f"{R}1. Extract Image MetaData.{Style.RESET_ALL}")
+    print (f"{Y}2. Clear Image MetaData.{Style.RESET_ALL}")
+    user_choice = input(f"{G}[#]Choose an Option:>>{Style.RESET_ALL}")
+    if user_choice == "1":
+       ExMetaData()
+
+    elif user_choice == "2":
+         clear_all_metadata()
+
+    else:
+        print (f"{R}[-]Invalid option Please try again. {Style.RESET_ALL}")
+#
+def clear_all_metadata():
+    Display_banners()
+    print (" ")
+    print (f"{Y}!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!{Style.RESET_ALL} ")
+    imgname = input(f"{B}Enter Image name to Clear MetaData: e.g xyz.png or 123.jpg:")
+    # Open the image file
+    img = Image.open(imgname)
+    # Read the image data, excluding metadata.
+    data = list(img.getdata())
+    # Create a new image with the same mode and size but without metadata.
+    img_without_metadata = Image.new(img.mode, img.size)
+    img_without_metadata.putdata(data)
+    # Save the new image over the original file, effectively removing metadata.
+    img_without_metadata.save(imgname)
+    print (f"{G}Metadata successfully cleared from {Y}'{imgname}'.")
+#
+def ExMetaData():
+    Display_banners()
+    print ("")
+    print (f"{G}<{Y}<{R}<{C} {R}>{Y}>{G}> {Y}MetaData Extractor!!!{C} {G}<{Y}<{R}<{C}{R}>{Y}>{G}>{R}>{Y}>{G}>{Style.RESET_ALL}")
+    print (" ")
+    imagename = input(f"{Y}Enter image name to Extract MetaData:{W} {italic}e.g Abc.jpg or xyz.png{italic2}: ")
+    image = Image.open(imagename)
+    # extract other basic metadata
+    info_dict = {
+        f"{G}Filename": image.filename,
+        f"{G}Image Size": image.size,
+        f"{G}Image Height": image.height,
+        f"{G}Image Width": image.width,
+        f"{G}Image Format": image.format,
+        f"{G}Image Mode": image.mode,
+        f"{G}Image is Animated": getattr(image, "is_animated", False),
+        f"{G}Frames in Image": getattr(image, "n_frames", 1)
+          }
+
+    for label,value in info_dict.items():
+        print(f"{label:25}: {value}")
+        # extract EXIF data
+        exifdata = image.getexif()
+       # iterating over all EXIF data fields
+        for tag_id in exifdata:
+    # get the tag name, instead of human unreadable tag id
+            tag = TAGS.get(tag_id, tag_id)
+            data = exifdata.get(tag_id)
+    # decode bytes 
+            if isinstance(data, bytes):
+               data = data.decode()
+               print (f"{tag:25}: {data}")
+               print (f"{M}Press Enter to continue....")
+#
 
 
 def ZipF():
@@ -196,36 +450,14 @@ def banner15():
 
 def banner1():
     print(" ")
-    print(f"""{G}
-
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣠⡤⠶⠒⢚⣛⣉⣉⣙⣛⣓⠲⠦⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣠⣤⣤⣴⠞⢋⣥⣴⣶⣿⣿⠟⠛⠉⠉⢻⣿⣿⣶⣬⡙⢦⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⡾⠉⠀⠀⣰⣿⣾⣿⣿⣿⣿⠏⠀⠀⠀⠀⢀⣼⣿⣿⢿⣿⣿⣾⠉⠙⢦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⣠⣯⣀⣀⣴⣿⣿⣿⣿⡿⠿⣿⣿⣦⣀⣀⣤⣶⣿⣿⣿⠀⠀⠈⣿⣿⣧⡀⠈⢻⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⢀⣤⢞⣡⣽⣿⣿⣿⣿⣿⣿⣿⡇⠀⠈⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⣤⣾⣿⣿⣿⣿⣶⣾⢷⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⢀⣴⢻⡵⠋⢙⣿⣿⣿⠟⠛⠉⠉⠛⣿⣶⣿⣿⣿⣿⣿⣿⠛⠋⠙⠛⠻⢿⣿⣿⣿⣿⣿⣿⣿⣮⣳⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⣰⢟⣷⣿⣷⣤⣾⣿⣿⡇⠀⠀⠀⠀⢀⣼⣿⡿⠟⠻⣿⣿⣿⡀⠀⠀⠀⠀⠀⠹⣿⣿⡟⠉⠻⣿⣿⠋⠉⠓⢤⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⢀⡼⠷⣟⣛⣛⡻⠿⠿⣿⣿⣿⣶⣤⣴⣶⣿⣿⣿⣇⣀⣀⣿⣿⣿⣿⣶⣤⣀⣀⣠⣼⣿⣿⡆⠀⢀⣿⣿⡀⠀⠀⠈⢧⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⡾⢁⣾⠟⠧⣉⠉⠙⠓⠲⠦⠤⣤⣌⣉⣉⣭⣭⣭⣉⣩⣉⣉⣍⣩⣭⣭⣭⣍⣛⠛⠻⠿⠿⣿⣿⣿⣿⣿⣿⣦⡀⠀⣼⠃⠀⠀⠀⠀⠀⠀⠀⠀
-⡇⢸⡃⠀⠀⠀⠙⠲⠤⣄⣀⠀⠀⠉⢻⣿⣿⣿⣏⠻⡍⠛⠛⠛⠋⣰⢟⣽⡿⣿⣯⡛⠒⠤⢤⣈⠙⠻⢿⣿⣿⣿⣿⢻⡆⠀⠀⠀⠀⠀⠀⠀⠀
-⢧⢸⡗⠦⣄⡀⠀⠀⠀⠀⠉⠙⠓⢲⣿⣿⣧⣨⣿⡇⠁⠀⠀⠀⠀⠁⢸⣿⣠⣿⣿⣿⡒⠒⠚⠛⠛⠲⣤⣝⠻⣿⣿⡇⢿⠀⠀⠀⠀⠀⠀⠀⠀
-⠘⢧⢿⡀⠀⠉⠓⠒⠦⢤⣤⣤⣴⣿⣿⣿⣟⣿⡿⠃⠀⠀⠀⠀⠀⠀⠘⣿⣿⣿⣿⣿⣷⣤⣄⡀⠀⠀⣀⣹⣷⣮⡻⣷⢸⡆⠀⠀⠀⠀⠀⠀⠀
-⠀⠈⢷⣷⣦⣄⣀⣀⣀⣀⣀⣴⠏⠈⢮⠛⠛⠋⠀⠀⠰⠄⠀⠀⠰⠆⠀⠈⠛⠛⠫⠞⠀⠻⣌⠉⠉⠉⠀⠀⠀⠈⣷⡘⢺⡇⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠙⢿⣆⡀⠀⠉⠉⠉⣿⡀⠶⠲⠤⣄⣀⣀⡠⠤⠤⠤⠶⠤⠤⣄⣀⣀⣠⠤⠖⠂⢀⡟⠛⠶⠤⠤⠤⠤⢤⣾⢃⡾⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠙⠻⢿⣛⠛⠛⣿⠿⢦⡀⠀⠀⠀⠤⣀⣀⡠⠤⠤⣀⣀⡠⠤⠀⠀⠀⢀⡴⢿⣟⠳⠦⣤⣤⣤⠾⢟⣥⠟⠁⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⢀⣤⠶⠶⢭⣷⠞⠛⢦⠀⠳⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣴⠋⢀⡾⠛⢷⣯⠽⠿⠶⣞⠋⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⡿⠁⠀⢀⡾⠃⠀⠀⠈⠀⠀⠙⢦⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣠⠾⠁⠀⠸⢀⠀⠀⠙⣷⡀⠀⠙⣧⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⣇⠀⢰⠟⠁⠀⠤⢤⡇⠀⠀⠀⠀⠀⠉⠑⠀⠀⠀⠀⠀⠀⠊⠉⠀⠀⠀⠀⠀⣼⡤⠤⠀⠈⢳⡄⠀⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⢻⡄⢸⠀⠀⠀⠀⠀⢻⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣼⠋⠀⠀⠀⠀⢠⡇⣰⠇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⢳⡈⢧⡀⠀⠀⠀⠀⢿⡦⠤⠀⠀⣀⣀⣠⣤⣤⣤⣤⣀⣀⡀⠀⠀⠠⣾⡏⠀⠀⠀⠀⢠⡞⣰⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠻⡄⠱⣤⡀⠀⠀⠈⢧⠀⠀⠀⠀⠀⠀⠈⠙⠋⠁⠀⠀⠀⠀⠀⢀⡿⠁⠀⠀⢀⡴⠋⣰⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⢠⣶⢶⣾⢷⣤⣮⣿⣦⠀⠀⠈⠙⣦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⡴⠋⠀⠀⢀⣴⣯⡤⣤⣿⡶⠦⢶⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠈⣿⣿⣻⠃⢹⡹⡞⠿⣷⡄⢀⣤⣶⣝⡻⠿⢷⡶⠦⠴⣶⡾⠽⣟⣫⣦⣄⠀⣠⣿⣾⣵⢳⡇⠹⡟⣿⡟⠀⠀⠀⠀⠀ ⠀⠀ ⠀⠀ ⠀
-⠀⠀⠀⠀⠈⠛⠁⠀⠘⠛⠁⠀⠈⠹⡸⣅⢹⡝⠿⣷⠾⠃⠀⠀⠘⠷⣾⠟⣱⠋⣸⢰⠋⠀⠀⠙⠛⠁⠀⠙⠛⠁⠀⠀⠀⠀⠀ ⠀⠀ ⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣧⣘⡆⠙⠶⠛⠀⠀⠀⠀⠀⠀⠛⠒⠋⣾⣁⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀ ⠀⠀ ⠀⠀ ⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-
-
+    print(f"""{M}
+__________ ________           _____                   
+\______   \\_____  \         /  _  \ _______ _____    
+ |     ___/ /  ____/ ______ /  /_\  \\_  __ \\__  \   
+ |    |    / {R}   \/_____//    |    \|  | \/ / __ \_ 
+ |____|    \_______ \      \____|__  /|__|   (____  / 
+                   \/              \/             \/  
+                                                      
 """)
     
 def banner2():
@@ -255,68 +487,33 @@ def banner2():
 def banner3():
     print(" ")
     print(f""" {C}
-⢶⣿⣶⡢⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣴⢾⡭⠂
-⢻⣿⣹⣟⣦⡕⠦⣄⣀⣀⡀⢀⣀⣀⣠⣤⣀⣀⣀⡀⣀⣀⣠⣴⢿⣟⣒⠚⢷⡄
-⠸⣷⡏⣵⣟⣻⣷⣮⢻⡿⢹⡿⢿⢿⡟⣫⡟⣽⠿⢩⡿⣫⢾⣱⣧⣦⣭⣷⣾⡇
-⠀⢿⣿⣿⣴⡿⣟⠋⡀⠀⢠⡿⠉⣆⢌⡗⠀⣯⠀⠀⠀⠽⠻⢯⣷⣖⣿⣿⡟⠀
-⠀⢸⣿⣿⣿⣍⣶⣄⡓⢈⢸⣿⣄⣿⣸⣧⣽⡾⠦⠀⠀⠄⣔⣩⣿⣿⣟⢻⠁⠀
-⠀⢸⡛⣿⣽⣿⣽⡿⠳⣬⣾⠟⣿⣹⣿⢻⡟⠁⠤⢢⠀⠐⠿⠿⣫⣿⣿⢺⠀⠀
-⠀⢸⣧⡻⣿⡿⠏⠓⠀⠈⣻⠀⣿⣾⣿⣾⠀⠀⠄⠀⠀⠀⠀⠈⠱⠿⠻⡸⠀⠀
-⠀⠘⣿⣧⠽⢿⣤⣴⣿⣿⣷⣶⣇⠐⡷⢌⡧⣨⣴⣦⣤⣀⠀⠀⠀⠀⠀⡆⠀⠀
-⠀⠀⢻⣿⣿⡿⣿⣿⣿⣿⣿⡯⣿⣠⠞⠈⢠⣿⣿⣿⣿⣿⠱⢤⡀⢀⣼⠃⠀⠀
-⠀⠀⠈⣿⣿⣷⣿⣿⡿⢿⣿⣃⣄⠀⠠⠄⢨⡙⠿⢿⠟⢃⡀⠬⠿⣬⠏⠀⠀⠀
-⠀⠀⠀⠸⣿⣿⣿⣷⣞⣻⣿⣿⣏⣀⣀⣼⡟⠓⠤⢄⣀⡛⠋⠀⢀⡟⠀⠀⠀⠀
-⠀⠀⠀⠀⢹⣿⣿⡿⠋⠉⠀⠈⣻⣿⣟⡁⠀⠈⠉⠙⠉⢉⣴⣲⡞⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⣼⣿⣷⢟⣿⢩⡉⣿⣿⠿⣿⢯⣅⠀⠢⡴⠻⢍⣉⠐⣧⠀⠀⠀⠀⠀
-⠀⠀⠀⣰⣿⣿⣿⣾⣿⣶⣿⣾⣤⣏⣰⣬⣶⣸⣥⡱⡔⢤⡂⠀⠘⡆⠀⠀⠀⠀
-⠀⠀⢠⣿⣛⣿⢿⢻⣿⣿⣿⣿⣿⣿⡿⠟⠻⠟⠉⡀⠘⠋⠀⠀⠀⣼⠀⠀⠀⠀
-⠀⠀⣸⠿⡿⣟⢮⡞⣏⡿⣻⠛⠟⠛⠁⠂⠀⠐⠀⠁⠀⠀⠀⠀⠀⠹⡆⠀⠀⠀
-⠀⠀⣿⣿⢷⡟⣫⡙⣦⠳⡁⠨⡀⠀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⠴⢷⠀⠀⠀
-⠀⢸⣿⡾⣿⣿⣶⣧⠟⣥⡆⠀⠙⡄⡅⠀⠀⠀⠀⠰⡖⣶⠖⠋⠁⢠⠼⠀⠀⠀
-⠀⠘⣿⣿⣿⣾⣿⣿⣿⡟⢰⡎⠀⢽⡈⠀⠀⠀⡀⣼⣵⣁⣬⠴⠚⠀⢸⠀⠀⠀
-⠀⠀⢻⣷⢻⣿⣿⣿⣿⣂⣼⡁⢣⠀⠇⠀⠀⠀⠀⣿⠻⡏⠀⠀⠀⠀⠈⠀⠀⠀
-⠀⠀⢈⣷⠿⣯⣿⣿⣿⠦⢹⣇⢾⣆⠸⠁⠀⠀⠀⡿⢀⠁⠀⠤⠀⠀⠀⠀⠀⠀
-⠀⠀⢸⣥⣒⠅⡙⣿⣿⣧⣾⣿⢲⣿⠀⡥⠀⠀⢠⡗⠀⠀⠀⠀⠠⡞⠀⠀⠀⠀
-⠀⠀⢸⡿⠋⠁⠀⠹⣿⣿⢷⣿⣹⣿⢰⡏⠀⡄⣿⣟⡀⡀⠀⠀⣰⠃⠀⠀⠀⠀
-⠀⠀⠈⢿⣔⠆⠀⣰⣿⣿⡾⣿⢿⣿⡷⣧⢰⣻⣿⣿⣤⣧⡤⢐⡏⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠈⠉⣿⡟⢫⢿⣶⡟⡦⣿⣿⣟⣦⣿⣿⣿⠟⠁⠉⣹⠁⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠹⣗⢎⡞⢻⡑⣃⢫⢿⡿⣽⡟⠏⠋⠀⠀⢰⠋⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⢀⣿⣿⣟⣖⣦⣄⢢⣏⣾⠛⢫⠀⠀⠀⢠⠞⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⢀⣾⣟⣾⣯⣿⣿⣿⣾⣿⣿⡷⣿⠂⣀⠔⠃⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠘⢿⡘⠿⠛⢡⠟⣿⠃⠁⠀⠀⠀⡜⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠙⠒⠋⠁⠀⠘⠷⣌⣀⡰⠊⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-
+ ███████████   ████████               █████████                      
+░░███░░░░░███ ███░░░░███             ███░░░░░███                     
+ ░███    ░███░░░    ░███            ░███    ░███  ████████   ██████  
+ ░██████████    ███████  ██████████ ░███████████ ░░███░░███ ░░░░░███ 
+ ░███░░░░░░    ███░░░░  ░░░░░░░░░░  ░███░░░░░███  ░███ ░░░   ███████ 
+ ░███         ███      █            ░███    ░███  ░███      ███░░███ 
+ █████       ░██████████            █████   █████ █████    ░░████████
+░░░░░        ░░░░░░░░░░            ░░░░░   ░░░░░ ░░░░░      ░░░░░░░░ 
+                                                                     
+                                                                     
+                                                                     
 """)
     
 def banner4():
     print(" ")
     print(f""" {R}⠀⠀⠀⠀⠀⠀
-⠿⠿⠟⠛⠛⠛⠛⠉⠉⠀⢀⣴⣿⣿⣿⡿⢿⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
-⠀⠀⠀⣀⣀⣀⣠⡄⣠⣴⣾⣿⣿⠟⠁⠀⠀⠀⠀⠀⠉⢻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣦⣦⣍⣙⡛⠻⠿⠿
-⣿⣿⣿⣿⣿⣿⣿⣤⣿⣿⣿⣿⠏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⢻⠿⣿⣿⣿⣿⣿⣿⣿⣿⣿⢿⢟⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣶
-⠉⠉⠉⣿⣯⣁⣀⣾⣿⣿⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣀⠀⠀⠀⠀⠙⢿⣿⣿⣿⣿⣋⠁⠀⠈⠁⣩⡝⠻⢿⣿⣿⣿⢿⣿⣿⣿⣿
-⠀⠀⠀⠉⠿⣿⣿⣿⣿⣿⣿⡯⠀⠀⠀⠀⣤⣤⠀⠀⣠⣿⣿⣷⣄⠀⠀⠀⠀⠙⢿⣿⣿⣿⣿⣿⣷⣤⣤⣽⣄⠀⠀⠿⣿⣆⠀⠙⢿⣿
-⣶⡄⠀⠀⠀⠘⢿⣿⣿⣿⣿⣷⣄⡀⠀⢸⣿⣿⣧⠀⠹⣿⣿⣿⣿⣷⣤⡀⠐⠤⢤⣉⣻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣶⣼⣿⣦⠀⠀⠀
-⠉⠀⣀⣀⣤⣴⣿⣿⣿⣿⣿⣿⠋⠁⢠⣼⣿⣿⣿⠈⠀⠹⣿⣿⣿⣿⣿⣿⣿⣶⣄⠀⠉⢻⣿⣿⣿⣿⣿⣿⣿⣿⣛⠋⢉⡹⣿⣷⣾⣿
-⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠃⠀⠀⣿⣿⣿⣿⡿⠆⠀⠀⠀⠙⠿⣿⣿⣿⣿⣿⣿⠇⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⡀⢣⢹⣿⣿⣿
-⣿⣿⣿⣿⣿⣿⣥⡿⠿⢛⣁⠀⢀⣾⣿⣿⣿⣿⠇⠀⠀⠀⠀⠀⠀⠈⣉⠛⠛⠉⠁⠀⢀⣼⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⢷⠘⡄⢻⣿⣿
-⣿⣿⣿⡟⠛⠉⠉⠻⠦⠉⠉⠉⠛⢿⣿⣿⡿⠋⠀⠀⣼⣿⣷⣦⣤⡀⠀⠀⠀⠠⠴⠒⢻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣾⣧⢸⠈⣿⣿
-⣿⡇⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⠉⠁⠀⠀⠀⠀⠿⠿⠿⠉⠉⠉⠀⠀⠀⠀⠀⢀⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣬⣤⣀⣼⣿
-⣿⡇⠀⠀⠀⡀⠀⠀⠀⠀⠀⠀⣠⣼⣴⠖⠚⠀⠀⠀⠀⠀⠀⣀⣀⣀⡀⠀⠀⠀⠀⣸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣯⣴⣾⣿⠁⠀⠀
-⠉⠁⠀⠐⣾⣿⡄⠀⠀⠀⠀⣤⣿⣿⣿⣦⣄⠀⠀⠀⠀⣴⣿⣿⣿⣿⣿⣦⡀⠀⢠⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠀⠀⠀
-⠀⠀⠀⢠⣿⣏⣃⣀⣀⣀⣷⣿⣿⣿⣿⣿⣿⣧⡀⠀⠀⢻⣿⣿⣿⣿⣿⣿⣧⠀⣸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣟⠁⠀⠀⠀
-⠿⠧⠀⢰⣾⣿⡷⠚⢻⣿⡿⣻⣿⣿⣿⣿⣿⣿⣿⣦⣄⠀⢻⣿⣿⣿⣿⣿⣿⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣤⣴⢿
-⣶⣿⣿⣿⣿⣿⣿⣿⣿⢏⣴⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⡄⠻⣿⣿⣿⣿⣿⡾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡏⠀
-⣿⣿⣿⣿⣿⣿⡿⠋⢁⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡄⠻⣿⣿⣿⣿⣇⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠟⠀⠰
-⣿⣿⣿⣿⣿⡿⠀⢠⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡄⢹⣿⣿⣿⣇⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠿⠀⠀⠀
-⣿⣿⣿⣿⡿⢁⢠⣿⡿⠃⠀⢘⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣄⢿⣿⣿⣿⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⡀⠀⠀
-⣿⣿⣿⠛⢠⣿⣿⣿⣇⣀⣠⣼⡟⠉⠛⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡌⢿⣿⣿⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣤
-⣿⣿⣿⣷⣾⣿⣿⣿⣿⣿⣿⣿⣀⣠⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣌⡛⢛⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
-⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
-⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
-⠋⠉⢉⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
-⣰⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
-⠀⠀
+8888888b.   .d8888b.              d8888                 
+888   Y88b d88P  Y88b            d88888                 
+888    888        888           d88P888                 
+888   d88P      .d88P          d88P 888 888d888 8888b.  
+8888888P"   .od888P"          d88P  888 888P"      "88b 
+888        d88P"      888888 d88P   888 888    .d888888 
+888        888"             d8888888888 888    888  888 
+888        888888888       d88P     888 888    "Y888888 
+                                                        
+                                                        
+                                                        ⠀⠀
 """)
     
 def banner5():
@@ -337,40 +534,13 @@ def banner5():
     
 def banner6():
     print(" ")
-    print(f""" ⠀{C}⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⣟⣿⣿⣿⣿⣿⣿⣛⡛⡿⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇
-⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⢿⣹⣽⣿⣿⣿⣿⣿⣿⣿⣿⣾⣿⣿⣷⣦⣌⣹⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇
-⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⣯⣴⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣯⡹⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇
-⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠋⣴⣿⣼⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣌⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇
-⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠃⣾⣷⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡟⣿⣿⡬⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇
-⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡏⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣻⣿⣿⡈⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇
-⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠿⠟⣿⣉⣭⣭⣭⡿⣿⣻⡿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠃⣿⡏⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡏⣿⣿⣧⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⢿⡃
-⢸⣿⣿⣿⣿⣿⣿⣿⣿⡿⢋⣤⢶⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣿⣟⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⢹⣷⣹⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠛⠛⠻⠿⠿⢿⣿⣿⣟⣹⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⢿⣾⡇
-⢸⣿⣿⣿⣿⣿⣿⣿⠏⣠⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⢸⣿⡏⢹⣿⣿⣿⡿⠟⠛⠛⠿⣿⣿⣿⣿⣿⠀⠐⠛⠛⠃⠀⢢⠀⢹⣿⡟⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⢳⣾⣿⣿⡇
-⢸⣿⣿⣿⣿⣿⣿⡏⢰⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣹⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣧⢸⡟⣿⠀⣿⡿⠋⠀⠂⠀⠀⠀⠹⣿⡖⣿⣿⠀⠀⠀⠀⠀⠀⢸⠿⠀⣿⣴⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣾⣿⣿⣿⡇
-⢸⣿⣿⣿⣿⣿⡏⢠⡿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣆⢳⣻⣶⡟⠀⠀⠀⠀⠀⢸⠃⠀⣿⠧⠛⢿⣄⡀⠀⠀⣀⢀⠾⠀⢸⣿⣶⡿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⢻⣿⣿⣿⠇
-⢸⣿⣿⣿⣿⣿⠁⠋⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⠹⣻⡇⠀⠀⠀⠀⠀⠘⠀⣰⡏⠀⠀⠀⠻⣿⣶⣤⣉⣉⣠⣴⣿⣿⣿⢁⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣼⡿⠋⠀⠀
-⢸⣿⣿⣿⣿⣿⡇⠀⢠⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⢿⣿⢰⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣆⠱⢾⡄⠀⠀⠀⠀⠀⣠⣿⠀⠀⠀⠀⠀⢻⣿⣿⣿⣿⣿⣿⣿⡍⢡⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡼⡄⠀⠀⠀⠀
-⢸⣿⣿⣿⣿⣿⠀⢰⠋⠉⠀⠀⠀⠀⠈⣿⣿⣿⡿⠿⢿⣿⣿⣿⡿⣡⣿⡟⣸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡆⢾⣿⣶⣀⣀⣶⣿⣿⣿⣦⣀⣤⢦⣤⣿⣿⣿⣿⣿⠟⢋⡿⢇⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣧⠙⣄⠀⠀⠀
-⢸⣿⣿⣿⣿⡿⠃⡄⠀⠀⠀⠰⠀⠀⣠⡯⣽⡛⠀⠀⡀⠈⠻⣿⡧⣾⠏⣰⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡌⠿⠿⠿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣧⣿⠃⢸⠈⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⣼⣟⡶⡆
-⢸⣿⣿⣿⣿⡇⠸⣿⣦⡀⠀⣀⣠⣾⠟⠃⢿⣧⠀⠀⠁⠘⠀⠘⣇⠀⣰⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⡀⠘⢿⡿⣿⣿⣿⣿⣿⣿⠻⣿⣿⣿⡟⢃⣡⡧⠀⣾⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣮⣙⠳⡇
-⢸⣿⣿⣿⣿⣿⡶⢈⢛⣿⣿⣿⡿⠋⢀⡆⢸⣿⡀⠀⠦⠄⠀⣸⡇⣴⣿⣿⣿⣿⣿⣿⣿⣿⣛⣿⣷⣶⣷⣶⣾⣍⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣇⠀⠈⠓⠿⡿⣿⡟⣻⢩⣯⣽⣷⠙⠃⠈⠁⢠⠴⡞⢰⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⡄
-⢀⠸⣿⣿⣿⣿⠃⡼⢻⣿⣿⣟⣣⣀⡈⠁⢸⣿⣿⣿⣶⣾⢯⣿⢻⣿⣿⣿⣿⣿⣿⣿⢳⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⡌⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡄⠀⠁⠑⡓⠛⠃⠉⣈⠉⠀⠀⠀⠀⠀⣀⣾⣾⡐⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇
-⠸⠆⢻⣿⣿⡟⢰⣷⠀⠪⢝⡻⢿⣿⣿⣿⣿⣿⣿⢿⣩⡷⢂⣼⣿⣿⣿⣿⣿⣿⡟⠉⠋⠁⠈⢿⣿⠃⠀⠈⠙⢿⣿⣿⠈⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣀⠀⠀⢳⣀⠀⡀⢀⠀⣀⣠⣖⢺⣟⣛⢸⣿⠁⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇
-⠀⠀⢸⣿⣿⣧⠘⣿⣇⢀⠀⠁⠘⠐⠗⠾⠿⠿⠧⣼⣿⠇⣾⣿⣿⣿⣿⣿⣿⣿⣿⠀⠀⣠⣀⣀⣹⣷⡀⠀⠀⠀⠀⢻⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⠐⣍⣧⣽⣬⣧⣼⣿⣿⣿⣿⣿⡿⠟⠀⡛⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇
-⢸⢃⣸⣿⣿⣿⣧⠸⣿⣿⣤⣀⣆⠠⢠⠤⠤⣤⣶⣼⡟⢰⣿⣿⣿⣿⣿⣿⣿⣿⣿⡌⡹⠋⠉⠽⠿⣿⣿⡄⠺⠣⠀⣾⢠⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣧⠹⣾⣿⣿⣿⣿⣿⣿⣿⠟⠋⠀⣠⡞⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇
-⠘⣸⣿⣿⣿⣿⣿⣆⠻⣿⣿⣿⣿⣿⣿⣿⣿⡿⠟⢉⣴⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣧⡁⠀⠀⠀⠀⠈⠙⠃⠀⣇⡐⠃⣼⣿⣿⣿⣿⢿⣷⣦⣍⣻⡛⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⡯⣝⣿⣿⣷⣶⣶⠛⣿⣿⣧⠸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡟⣿⣟⣻⣟⠛⠛⠿⡇
-⢰⣿⣿⣿⣿⣿⣿⣿⣷⠀⢩⣟⡛⠿⠿⠛⢉⣠⡔⠒⢠⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣾⡄⢠⠀⠀⠀⠀⢸⠟⠉⠈⣿⣿⣿⣿⠇⣘⣻⣻⣿⢻⣿⣷⡿⠿⡛⢿⣟⣿⣿⣿⡿⣛⣻⣿⡇⠉⠀⠀⠉⠁⢠⣿⡏⢹⣿⣷⣾⣿⣍⢻⣿⣿⣿⣿⣿⡿⢿⣿⣿⣿⣿⣿⣷⡆
-⢨⣭⣉⣿⡿⠟⠋⠐⠺⠂⣿⣤⣏⢙⣿⣿⣿⠛⠃⠀⠻⠿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣟⠁⠈⠀⠀⠀⢠⡾⢶⠋⡀⢹⣿⣿⣏⣿⣿⣿⣿⣿⣉⡁⠹⣿⡌⣿⣿⡿⠉⠉⠀⣀⣀⡀⠈⠁⠨⠀⠀⠀⠀⠊⠙⢃⠈⠍⠉⣿⣿⡿⠟⠛⠛⠛⢉⣉⣭⣿⣿⣿⡆⢉⠉⠁⡄
-⠈⠻⢿⣟⠁⠀⠀⠀⠀⠒⠈⠙⠻⠿⣿⣿⣿⠏⠉⠉⠑⢶⣦⡉⢻⣿⣿⣿⣿⡿⠿⠿⣿⣿⡀⠀⠀⠃⢀⣾⡏⠉⠙⠀⠈⣿⣿⣇⣹⣿⣿⣿⣿⣏⠀⠂⢸⣿⣿⣼⠀⠀⠀⠀⠀⠠⠄⠀⠀⠀⣀⣀⣀⡀⠂⢀⣩⣴⣶⠿⠛⠉⠀⢠⣤⡄⠯⣾⣿⣿⣿⣿⣿⠇⠀⠻⠀⠀
-⠀⠀⣀⠙⣿⣶⣤⣀⡈⢀⣿⣿⣶⣶⣤⣴⣾⠀⠀⠀⠀⠀⣻⣿⣤⣿⣷⣶⣿⣿⣿⣷⣷⣦⣥⠆⣠⣾⣿⠟⠓⠀⠀⡀⠀⠈⠍⠛⢉⣿⣿⣿⣿⣿⡆⠀⣶⡻⣿⡿⠙⢻⣿⣶⣿⣶⣶⣶⣤⣾⣿⣿⣿⣿⣿⠿⠛⡉⠀⠀⠀⠊⢀⣼⣿⠻⣿⣿⣿⣿⣿⣿⣿⡀⠀⠀⡀⠀
-⢀⠀⢻⣇⠙⣽⠛⠿⢿⣾⣿⣿⣿⣿⣿⡏⢀⣤⣴⣾⣿⣿⣿⣿⣿⡛⠋⠉⠉⠉⠉⠛⣿⣿⣿⡁⢈⠉⢁⣀⠀⠀⠘⠒⢂⡀⠄⠉⢹⣿⠿⠟⠛⠁⠀⠀⢻⣷⡆⠀⣾⣿⣿⣿⣿⣿⣿⣿⣿⠹⠿⠿⠛⠉⠀⠐⠋⠡⠀⡀⠀⣠⣾⡟⢻⣷⣿⣿⣿⣿⣿⣿⣿⣷⡀⠀⠁⠀
-⠀⠀⠈⠛⣷⣤⣀⡀⣾⣿⣿⣿⣿⣿⣿⣧⠸⡿⠟⠛⠉⠁⢠⣿⣿⠃⠀⠀⠀⠀⠀⣼⣿⣿⣿⣿⠀⠈⣿⣿⡷⠉⢙⣩⠅⢠⣤⣤⣿⣿⠆⣠⠀⠀⡀⠀⠀⠹⣷⡀⠙⢿⣿⣿⣿⣿⣿⠏⢁⡀⠀⠀⠀⠀⠀⠀⢀⣐⣉⣴⣾⣿⠟⠀⠀⣿⣿⣧⣿⣿⣿⣫⠟⢻⣷⠀⠀⡀
-⠀⠀⠀⠀⢌⠙⠻⣿⡏⠁⣀⠀⠙⠛⠋⠁⠀⠀⠀⢀⣠⣴⣿⣿⠃⠀⠀⠀⠀⠀⢸⣿⣿⣿⣿⣃⣀⣀⠙⠟⢀⣀⡀⠀⣀⡸⢿⣿⣿⠇⣼⣷⣇⣰⠀⠀⠀⠀⠻⢷⡀⠈⢿⣿⠛⠛⠁⢠⣾⣿⣿⣿⡿⠻⡿⠿⠟⠛⣉⠙⢉⣀⣀⠀⢸⣿⡗⢸⣿⣿⡿⠃⡄⣿⣿⣇⠈⠁
-⢸⣦⣀⠀⠀⠀⠀⠈⣷⣿⣿⣿⣷⣦⢿⣿⣶⡿⠿⠟⠛⠋⠉⢳⣧⠀⠀⠀⡠⠖⠋⣿⡿⣿⣿⠈⢍⠻⣿⠇⠘⠀⠈⠉⠀⢠⣾⣿⡏⠀⣿⣿⡿⢿⣀⡀⠀⣀⣠⣤⣧⣤⡀⠀⠀⠀⠐⠟⠛⠉⠁⠀⠀⠀⠂⠘⠓⠚⢁⠔⠀⠀⠈⢁⣼⣿⠟⡿⣿⡏⢀⣾⣇⢸⣿⣿⡄⠀
-⠈⢿⠿⢿⣦⣤⡀⠺⠛⠿⢿⣿⡿⠋⠀⣀⠘⠉⠀⠀⠀⠀⠀⣸⣿⠀⢀⠎⣠⣾⢰⣿⡽⣿⣿⠀⠤⠠⣤⡆⠀⠲⠶⢶⣶⣾⣿⣿⣥⣞⡁⢹⣷⣈⣿⣷⣿⣿⣿⣿⣿⣿⣿⣷⣶⡦⠀⢠⡶⠀⠀⠀⠀⠀⢀⡀⠀⠀⠀⠐⢃⣸⣶⣿⣿⣯⡿⣱⣿⡇⢼⣿⣿⢸⣿⣿⡷⠀
-⠐⠢⠀⠀⠉⠉⠛⣷⣦⣄⣸⣥⣀⣠⣦⣤⣤⣤⣤⣶⣦⣾⣿⡿⠃⢀⡌⢰⣿⡿⢸⣿⡇⣿⣿⣇⣀⣀⠈⠉⠀⣀⡀⠀⢠⣿⣿⡏⢨⢹⣷⢸⣿⣿⡌⠙⠿⠿⢿⣿⣏⣿⣿⣿⣧⠀⡆⢸⣿⣄⠀⠀⠀⠀⠈⢓⣀⣤⣴⣾⣿⣿⡿⣿⠟⠁⠀⢹⣿⣿⡌⣿⣿⢸⣿⣿⡇⡄
-
+    print(f""" ⠀{Y}⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+oooooooooo    ooooooo              o                            
+ 888    888 o88     888           888     oo oooooo   ooooooo   
+ 888oooo88        o888 ooooooooo 8  88     888    888 ooooo888  
+ 888           o888   o         8oooo88    888      888    888  
+o888o       o8888oooo88       o88o  o888o o888o      88ooo88 8o 
+                                                                
 """)
 
 def banner7():
@@ -425,42 +595,14 @@ def banner9():
 
 def banner12():
     print (" ")
-    print (""" ⠻⣿⣿⣿⡿⢣⣾⣿⠏⢀⣬⣭⢝⡻⠿⠃⠋⠀⠈⠙⠻⣷⣝⢿⣮⣑⢮⡛⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⣿⡟⣿
-⠀⠈⠛⠟⣱⣿⣿⠏⠐⠋⠭⠙⢉⣠⣶⣿⣿⣿⣿⣷⣤⡈⢿⣇⠝⢿⣷⡻⣦⠙⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣽⣾⣿⣷⡿⣿
-⠀⠀⠀⣴⣿⣿⡯⠀⠵⢚⣡⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⡹⣦⡈⢿⣷⡜⢧⢢⣍⢻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⢿⡽⣯⣟⣽⣫⡗⣿
-⠆⠀⢀⣾⣿⣿⡇⠘⣱⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠟⢥⣿⣷⠈⠻⣌⠻⣿⣆⠈⢿⣦⡙⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣽⢾⢷⣯⡗⣿
-⣿⢃⢸⣛⣿⡌⠃⣾⣿⣿⣿⣿⣿⣿⣿⣿⡿⠿⢋⡀⠊⢀⢠⣄⢁⠀⠈⠳⠙⠻⢣⡈⠻⢃⣼⣿⣿⣿⣿⣿⣿⣿⣻⣞⠾⣼⣫⡞⣵⣛⡽
-⠏⠀⡿⢸⡿⣧⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣶⡞⠀⢎⢋⣡⣌⣉⢀⡐⠆⠀⠟⡤⠙⣄⢈⣻⣿⣿⣿⣟⢿⣻⢟⡶⣏⡟⣖⣣⣛⢶⣩⢟
-⠃⡇⣇⢹⡇⣿⡆⢻⣿⣿⣛⣋⠩⡀⠸⣿⣿⣿⣿⣧⣼⣾⣿⣿⣽⣿⣷⣦⡀⢸⣿⠂⠹⣆⣿⣿⡿⠿⠟⠳⡽⠾⣵⢭⣛⢮⣓⢮⡳⣝⡞
-⠀⡇⣿⢸⣿⡸⣿⡜⣿⡿⠟⢁⣀⠄⣰⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠋⢡⡅⡀⢦⢻⣌⢿⡞⣿⠟⠀⠀⠉⠘⠚⠽⣎⡽⢎⡳⣍⡞
-⡄⢗⢸⡆⣿⣧⠹⣷⡘⠇⢠⣘⠋⢀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣽⠰⢛⣰⡿⠘⠘⡟⡄⡿⢤⣶⣤⣄⣀⡀⠀⠀⠀⠈⠉⠁⠈⠈
-⣇⢈⢂⢻⠘⣿⣷⡹⣷⡀⠰⣊⣴⣿⣿⣿⣿⣿⣿⢿⣧⣶⣿⣿⣿⣿⣷⣿⢠⢠⠸⡇⠀⠇⠱⣿⡇⠺⢿⣿⣿⣿⣿⣷⣦⠀⠀⠀⠀⠀⠀
-⣿⣦⣂⠄⠁⢹⣿⣷⡜⢏⢊⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠃⠀⠈⢀⠃⠁⣰⣧⠹⣧⠀⠈⠉⠛⠋⠛⠉⠀⠀⠀⠀⠀⠀⠀
-⣿⣿⣿⣿⣦⠁⢹⣿⣿⣦⡁⢁⡈⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⢣⡆⡀⡀⠀⢀⣲⣌⣉⣀⡙⠂⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⣿⣻⣽⣷⣿⡄⠢⠹⣿⣿⣿⣦⡙⠒⠌⠩⢿⣿⣿⣿⣿⣿⣿⡿⠛⣠⡟⣰⠃⡇⣿⣿⣿⣿⣿⣿⣿⣿⣷⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⣿⣷⣻⣿⣿⣿⡀⠁⡹⣧⡻⣿⣦⣄⢮⣶⠶⣦⣄⡰⢥⣤⣤⡴⠾⠋⠼⢣⣿⣇⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⣿⣼⣿⣿⣿⣿⣷⠘⢂⡨⡑⢜⠻⢿⣦⠨⣵⣴⠉⢶⣮⣶⠖⠀⠀⠀⠐⣶⣦⣌⡘⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣶⣄⡀⠀⡀⣀⢀⡀
-⣿⢺⣿⣿⣿⡿⢋⠆⠙⢷⡎⣂⠓⠄⢈⡓⠪⠐⣀⣤⡝⣡⣏⡐⠀⣦⣄⠈⠘⠜⢀⣼⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣤⡐⠢⠘
-⣛⡿⣿⣿⡿⠃⣠⣿⣿⠀⠀⠈⢻⣇⠍⣠⣶⣿⣿⡟⠱⠿⠟⠀⢰⣿⣿⢣⣦⣤⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⡁
-⣯⡹⡵⡛⢀⣼⠟⠏⠁⠀⠀⠀⠀⣡⣾⣿⣿⣿⣿⣿⣷⣶⣄⣀⠿⣿⡟⣸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
-⣏⢧⡓⢁⡜⠋⠀⠀⠀⠀⠀⠀⣴⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⡝⠁⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
-⡞⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⣸⣿⠟⣵⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢈⣵⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣴⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
-⠀⠀⠀⠀⠀⠀⠀⠀⣰⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⣷⣿
-⠀⠀⠀⠀⠀⠀⢀⣼⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡆⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣻⣯⢿⣿⢯
-⠀⠀⠀⠀⠀⢠⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣇⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣻⣞⣧⣿⡟⣫⣾
-⠀⠀⠀⠀⠀⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡎⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣽⣿⣳⣻⣭⣶⣿⣿⣿
-⠀⠀⠀⠄⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡌⢻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠇
-⠀⠀⢨⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡠⠹⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠟⠃⠀
-⠀⢌⠂⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡏⠀⣄⡙⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠿⠛⢁⣴⡄⠀
-⢈⠢⠘⠀⢻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡟⢠⢼⡟⢱⣦⣬⣉⣙⣛⣛⡛⠛⠛⢉⣩⣤⡴⣾⣻⢾⣿⣳
-⠀⠆⡉⠄⠘⣿⣿⣇⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠁⣿⣾⢀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣽⣿⣿
-⠈⠔⠠⠘⡀⠘⣿⣿⣆⠻⣿⣷⣭⣿⢿⣭⢿⣟⣾⠟⣽⣿⣿⣿⣿⣿⣿⠃⣼⡿⢡⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
-⠈⠄⡁⠂⠄⡁⠈⢻⣿⣷⣬⣛⣛⠿⠯⠟⠿⢞⣭⣾⣿⣿⣿⣿⣿⡟⢁⣴⠟⣡⣿⣹⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣯⣿⣿⣿⣿
-⠈⡐⢀⠁⠂⠄⠡⠀⠙⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠿⠋⠀⣤⣻⢾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣟⣻⣯⣟⣿⣟⡿⣿⣿⣿⣿⣿⣿
-⠀⡐⠠⠈⠐⡈⢀⠁⡐⠀⠀⠉⠙⠛⠿⠿⠿⠿⠿⠟⠛⠉⠁⠀⠀⠀⠈⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣟⣿⣧⣍⢞⠫⣿⣻⢽⣻⣟⣿⣟⣿
-⠀⢀⠀⠁⠂
+    print ("""{G}
+██████╗ ██████╗        █████╗ ██████╗  █████╗ 
+██╔══██╗╚════██╗      ██╔══██╗██╔══██╗██╔══██╗
+██████╔╝ █████╔╝█████╗███████║██████╔╝███████║
+██╔═══╝ ██╔═══╝ ╚════╝██╔══██║██╔══██╗██╔══██║
+██║     ███████╗      ██║  ██║██║  ██║██║  ██║
+╚═╝     ╚══════╝      ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
+                                              
 """)
 
 def banner10():
@@ -904,9 +1046,9 @@ def Pdf_to_docx_audio_text():
     Display_banners()
     print (" ")
     print (f"{C}1. PDF To Audio{Style.RESET_ALL}")
-    print (f"{C}2. PDF To Txt{Style.RESET_ALL}")
+    print (f"{R}2. PDF To Txt{Style.RESET_ALL}")
     print (f"{C}3. PDF To Doc{Style.RESET_ALL}")
-
+    print (f"{Y}4. PDF TO Image{Style.RESET_ALL}")
     print (f" ")
     user_choice = input(f"{Y}[#]Choose an option:>> {Style.RESET_ALL}")
     if user_choice == "1":
@@ -917,6 +1059,9 @@ def Pdf_to_docx_audio_text():
           
     elif user_choice == "3":
          Pdf2_Doc()
+
+    elif user_choice == "4":
+         Pdf2_Image()
     else:
         print (f"{R}[-]Invalid option please try again.")
  
@@ -934,11 +1079,65 @@ def Pdf2_Txt():
     file_path = input(f"Enter file name here:> ")
     print (f"{G}Coming soon...")
 
+import os
+import fitz  # PyMuPDF
+import io
+from PIL import Image
 
+
+def Pdf2_Image():
+    # Output directory for the extracted images
+    output_dir = "extractedPdf_images"
+    # Desired output image format
+    output_format = "png"
+# Minimum width and height for extracted images
+    min_width = 100
+    min_height = 100
+# Create the output directory if it does not exist
+    if not os.path.exists(output_dir):
+       os.makedirs(output_dir)
+# File path you want to extract images from
+    print (f"{Y}^^^^^^^^^^^{R}^^^^^^{Y}^^^^^^^^^^^^^^^^^^^^")
+    print (f"{G}[iNFO]:{B}Enter file name to Extract the Image.")
+    print (f"{Y}^^^^^^^^^^^{R}^^^^^^{Y}^^^^^^^^^^^^^^^^^^^^")
+    file = input(f"{C}Enter file name:")
+# Open the file
+    pdf_file = fitz.open(file)
+# Iterate over PDF pages
+    for page_index in range(len(pdf_file)):
+    # Get the page itself
+        page = pdf_file[page_index]
+    # Get image list
+        image_list = page.get_images(full=True)
+    # Print the number of images found on this page
+        if image_list:
+            print (f"{G}[+] Found a total of {len(image_list)} images in page {page_index}{Style.RESET_ALL}")
+        else:
+            print (f"{Y}[!] No images found on page {page_index}{Style.RESET_ALL}")
+            print (f"{M}Press enter to continue...")
+        for image_index, img in enumerate(image_list, start=1):
+            xref = img[0]
+            base_image = pdf_file.extract_image(xref)
+            image_bytes = base_image["image"]
+        # Get the image extension
+            image_ext = base_image["ext"]
+        # Load it to PIL
+            image = Image.open(io.BytesIO(image_bytes))
+        # Check if the image meets the minimum dimensions and save it
+            if image.width >= min_width and image.height >= min_height:
+                image.save(
+                open(os.path.join(output_dir, f"image{page_index + 1}_{image_index}.{output_format}"), "wb"),
+                format=output_format.upper())
+            else:
+                print(f"{Y}[-] Skipping image {image_index} on page {page_index} due to its small size.")
+
+
+#
 def Pdf2_Doc():
     print (f"{Y}Kindly Enter The File Name To Convert Pdf To Doc Below")
     print (f" ")
     file_path = input(f"Enter file name here:> ")
+
     print (f"{C}Coming soon...")
 
 #
@@ -946,19 +1145,50 @@ def Pdf2_Doc():
 def Extract_txt_from_image_pdf():
     Display_banners()
     print (f" ")
-    print (f"{Y}1. Extract txt from image{Style.RESET_ALL}")
-    print (f"{Y}2. Extract txt from pdf {Style.RESET_ALL} ")
+    print (f"{B}1. Extract txt from image{Style.RESET_ALL}")
+    print (f"{R}2. Extract txt from pdf {Style.RESET_ALL} ")
+    print (f"{Y}3. Extract link from pdf {Style.RESET_ALL} ")
     user_choice = input(f"{M}[#]Choose an option:>> {Style.RESET_ALL}")
     if user_choice == "1":
        Extract_txt_from_image()
        
     elif user_choice == "2":
          Extract_txt_from_pdf()
+
+    elif user_choice == "3":
+         Extract_Link_from_pdf()
     else:
         print (f"{R}[-]Invalid option please try again.")
         
 
 #
+def Extract_Link_from_pdf():
+    print (f" ")
+    import fitz # pip install PyMuPDF    # a regular expression of URLs
+    url_regex = r"https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)"
+# extract raw text from pdf
+    print (f"{R}(((((((((((((((((((((((((((((((((")
+    print (f"{G}[iNFO]:{Y}Enter PDF file name  to Extract the link.")
+    print (f"{R}(((((((((((((((((((((((((((((((((")
+    file = input(f"{W}Enter file name:")
+# open the PDF file
+    with fitz.open(file) as pdf:
+        text = ""
+        for page in pdf:
+        # extract text of each PDF page
+           text += page.get_text()
+    urls = []
+# extract all urls using the regular expression
+    for match in re.finditer(url_regex, text):
+        url = match.group()
+        print(f"{G}[+] URL Found:", url)
+        urls.append(url)
+    print(f"{Y}[*] Total URLs extracted:", len(urls))
+    print (f"Press enter to continue...")
+
+
+#
+
 def Extract_txt_from_pdf():
     print (f"{B}Coming soon...")
 
@@ -974,13 +1204,13 @@ def Main_menu2():
        print(f"{W}    :: :: ::    {Y}[{C}*{Y}] Main Menu [{C}*{Y}]{W}    :: :: ::{Style.RESET_ALL} ")
        print(f"{C}!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! {Style.RESET_ALL}")
        print(f" ")
-       print(f"{G}-->> {C}[{W}0{C}]{G}==>> {C}Help                           {G}->> {C}[{W}11{C}]{G}==>> {W}DirCrawler   ")
-       print(f"{G}-->> {C}[{W}1{C}]{G}==>> {C}About Us                       {G}->> {C}[{W}12{C}]{G}==>> {W}PDF To Docx/Audio/Text")
+       print(f"{G}-->> {C}[{W}0{C}]{G}==>> {C}Help                           {G}->> {C}[{W}11{C}]{G}==>> {W}Extract / Clear PDF Meta Data ")
+       print(f"{G}-->> {C}[{W}1{C}]{G}==>> {C}About Us                       {G}->> {C}[{W}12{C}]{G}==>> {W}PDF To Docx/Audio/Text/Image")
        print(f"{G}-->> {C}[{W}2{C}]{G}==>> {W}Email Scraper                  {G}->> {C}[{W}13{C}]{G}==>> {W}Generate QR_Code ")
        print(f"{G}-->> {C}[{W}3{C}]{G}==>> {W}Web Scraper                    {G}->> {C}[{W}14{C}]{G}==>> {W}Count File & Folder ")
        print(f"{G}-->> {C}[{W}4{C}]{G}==>> {W}Get Domain Info                {G}->> {C}[{W}15{C}]{G}==>> {W}ZipFile")
-       print(f"{G}-->> {C}[{W}5{C}]{G}==>> {W}Remove_BG                      {G}->> {C}[{W}16{C}]{G}==>> {W}Network Scanning")
-       print(f"{G}-->> {C}[{W}6{C}]{G}==>> {W}Email Validator                {G}->> {C}[{W}17{C}]{G}==>> {W}Extract Txt From Image/PDF")
+       print(f"{G}-->> {C}[{W}5{C}]{G}==>> {W}Get Location Address/latitude  {G}->> {C}[{W}16{C}]{G}==>> {W}Extract / Clear Image Meta Data")
+       print(f"{G}-->> {C}[{W}6{C}]{G}==>> {W}Email Validator                {G}->> {C}[{W}17{C}]{G}==>> {W}Extract Txt / Link From PDF")
        print(f"{G}-->> {C}[{W}7{C}]{G}==>> {W}IP Address Info                {G}->> {C}[{W}18{C}]{G}==>> {W}Download YouTube Video")
        print(f"{G}-->> {C}[{W}8{C}]{G}==>> {W}Password Generator             {G}->> {C}[{W}19{C}]{G}==>> {C}Other Tools")
        print(f"{G}-->> {C}[{W}9{C}]{G}==>> {W}SubDomain Crawler              {G}->> {C}[{R}20{C}]{G}==>> {R}Exit")
@@ -1014,7 +1244,7 @@ def Main_menu2():
             input()
             continue
        elif user_choice == "5":
-            Remove_BG()
+            GetLocation_By_add_Lat_lon()
 
             input()
             continue
@@ -1064,12 +1294,12 @@ def Main_menu2():
             input()
             continue
        elif user_choice == "16":
-            Network_Scanning()
+            Extract_Clear_Image_MetaData()
 
             input()
             continue
        elif user_choice == "11":
-            DirCrawler()
+            Extract_Clear_Pdf_MetaData()
 
             input()
             continue
@@ -1116,19 +1346,19 @@ def Main_menu():
        print(f"{G}-->> {Y}[{W}2{Y}]{G}==>> {W}Email Scraper")
        print(f"{G}-->> {Y}[{W}3{Y}]{G}==>> {W}Web Scraper")
        print(f"{G}-->> {Y}[{W}4{Y}]{G}==>> {W}Get Domain Info")
-       print(f"{G}-->> {Y}[{W}5{Y}]{G}==>> {W}Remove_BG")
+       print(f"{G}-->> {Y}[{W}5{Y}]{G}==>> {W}Get Location Address / Latitude")
        print(f"{G}-->> {Y}[{W}6{Y}]{G}==>> {W}Email Validator")
        print(f"{G}-->> {Y}[{W}7{Y}]{G}==>> {W}IP Address Info")
        print(f"{G}-->> {Y}[{W}8{Y}]{G}==>> {W}Password Generator")
        print(f"{G}-->> {Y}[{W}9{Y}]{G}==>> {W}SubDomain Crawler")
        print(f"{G}->> {Y}[{W}10{Y}]{G}==>> {W}Link Shortener")
-       print(f"{G}->> {Y}[{W}11{Y}]{G}==>> {W}DirCrawler")
-       print(f"{G}->> {Y}[{W}12{Y}]{G}==>> {W}PDF To Docx/Audio/Text ")
+       print(f"{G}->> {Y}[{W}11{Y}]{G}==>> {W}Extract / Clear PDF Meta Data")
+       print(f"{G}->> {Y}[{W}12{Y}]{G}==>> {W}PDF To Docx/Audio/Text/Image")
        print(f"{G}->> {Y}[{W}13{Y}]{G}==>> {W}Generate QR_Code")
        print(f"{G}->> {Y}[{W}14{Y}]{G}==>> {W}Count File & Folder")
        print(f"{G}->> {Y}[{W}15{Y}]{G}==>> {W}ZipFile")
-       print(f"{G}->> {Y}[{W}16{Y}]{G}==>> {W}Network Scanning")
-       print(f"{G}->> {Y}[{W}17{Y}]{G}==>> {W}Extract Txt From Image/PDF")
+       print(f"{G}->> {Y}[{W}16{Y}]{G}==>> {W}Extract / Clear Image Meta Data")
+       print(f"{G}->> {Y}[{W}17{Y}]{G}==>> {W}Extract Txt / Link From PDF")
        print(f"{G}->> {Y}[{W}18{Y}]{G}==>> {W}Download YouTube Video")
        print(f"{G}->> {Y}[{W}19{Y}]{G}==>> {Y}Other Tools")
        print(f"{G}->> {Y}[{R}20{Y}]{G}==>> {R}Exit")
@@ -1162,7 +1392,7 @@ def Main_menu():
             input()
             continue
        elif user_choice == "5":
-            Remove_BG()
+            GetLocation_By_add_Lat_lon()
 
             input()
             continue
@@ -1232,12 +1462,12 @@ def Main_menu():
             input()
             continue   
        elif user_choice == "11":
-            DirCrawler()
+            Extract_Clear_Pdf_MetaData()
 
             input()
             continue   
        elif user_choice == "16":
-            Network_Scanning()
+            Extract_Clear_Image_MetaData()
        else:
            print (f"{R}[!]Invalid option please try again.")
 
