@@ -877,12 +877,12 @@ def Other_tools():
   [{W}+{Y}] {C}WELCOME TO [\u00A3yand3r] GET ALL KINDS OF ADVANCE WEBSITE / TOOLS 100% RELIABLE {Y}[{W}+{Y}]
 {G}[{R}*{G}]{Y}-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --{G}[{R}*{G}]
 {Y}~>> {G}[{W}1{G}]{C}Advance SMS / EMAIL Sender  {G}[{W}{Style.RESET_ALL}{italic} PREMIUM {tick}{G}]{italic2}!
-{Y}~>> {G}[{W}2{G}]{C}Advance EMAIL BOOMBER       {G}[{W}{Style.RESET_ALL}{italic} PREMIUM {tick}{G}]{italic2}! 
-{Y}~>> {G}[{W}3{G}]{C}Advance Stealer             {G}[{W}{Style.RESET_ALL}{italic} PREMIUM {tick}{G}]{italic2}!
-{Y}~>> {G}[{W}4{G}]{C}Advance Spyware             {G}[{W}{Style.RESET_ALL}{italic} PREMIUM {tick}{G}]{italic2}!
-{Y}~>> {G}[{W}5{G}]{C}Advance RAT                 {G}[{W}{Style.RESET_ALL}{italic} PREMIUM {tick}{G}]{italic2}!
-{Y}~>> {G}[{W}6{G}]{C}Advance Trojan              {G}[{W}{Style.RESET_ALL}{italic} PREMIUM {tick}{G}]{italic2}!
-{Y}~>> {G}[{W}7{G}]{C}Advance BTC_Cleper          {G}[{W}{Style.RESET_ALL}{italic} PREMIUM {tick}{G}]{italic2}!
+{Y}~>> {G}[{W}2{G}]{C}Advance                     {G}[{W}{Style.RESET_ALL}{italic} PREMIUM {tick}{G}]{italic2}! 
+{Y}~>> {G}[{W}3{G}]{C}Advance.                    {G}[{W}{Style.RESET_ALL}{italic} PREMIUM {tick}{G}]{italic2}!
+{Y}~>> {G}[{W}4{G}]{C}Advance                     {G}[{W}{Style.RESET_ALL}{italic} PREMIUM {tick}{G}]{italic2}!
+{Y}~>> {G}[{W}5{G}]{C}Advance                     {G}[{W}{Style.RESET_ALL}{italic} PREMIUM {tick}{G}]{italic2}!
+{Y}~>> {G}[{W}6{G}]{C}Advance                     {G}[{W}{Style.RESET_ALL}{italic} PREMIUM {tick}{G}]{italic2}!
+{Y}~>> {G}[{W}7{G}]{C}Advance.                    {G}[{W}{Style.RESET_ALL}{italic} PREMIUM {tick}{G}]{italic2}!
 {Y}~>> {G}[{W}8{G}]{C}CUSTUME T00ls and many more!!!
 {M}Kindly select your choice below! {Back.GREEN}\u00A3yand3r{Style.RESET_ALL}
 {G}[{R}*{G}]{Y}-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --{G}[{R}*{G}]
